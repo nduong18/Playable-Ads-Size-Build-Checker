@@ -3,119 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playable Ads Size Build Checker</title>
+    <title>Playable Ads Validator Pro | Full Features</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Hệ thống biến màu cho Light/Dark Mode */
         :root[data-theme="light"] {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border: #e2e8f0;
-            --table-header: #f8fafc;
-            --row-hover: #f1f5f9;
+            --primary: #2563eb; --primary-hover: #1d4ed8; --bg: #f8fafc; --card: #ffffff;
+            --text-main: #0f172a; --text-sub: #64748b; --border: #e2e8f0; --row-hover: #f1f5f9;
         }
-
         :root[data-theme="dark"] {
-            --primary: #3b82f6;
-            --primary-hover: #60a5fa;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text-main: #f1f5f9;
-            --text-sub: #94a3b8;
-            --border: #334155;
-            --table-header: #1e293b;
-            --row-hover: #2d3748;
+            --primary: #3b82f6; --primary-hover: #60a5fa; --bg: #0f172a; --card: #1e293b;
+            --text-main: #f1f5f9; --text-sub: #94a3b8; --border: #334155; --row-hover: #2d3748;
         }
-
-        --success: #10b981;
-        --danger: #ef4444;
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text-main); padding: 20px; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); color: var(--text-main); padding: 20px; transition: 0.3s; }
         .container { max-width: 1300px; margin: 0 auto; }
 
-        /* Header & Theme Toggle */
-        .header { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--primary); position: relative; }
-        .header-title { cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 8px; }
-        .header-title h1 { font-size: 1.8rem; color: var(--primary); display: flex; align-items: center; gap: 12px; margin: 0; }
-        .header-title p { color: var(--text-sub); font-size: 0.9rem; margin-top: 4px; }
-        
-        .theme-toggle { cursor: pointer; font-size: 1.5rem; color: var(--text-sub); transition: 0.3s; padding: 10px; }
-        .theme-toggle:hover { color: var(--primary); transform: rotate(15deg); }
+        /* Header */
+        .header { background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--primary); }
+        .header-title { cursor: pointer; }
+        .header-title h1 { font-size: 1.8rem; color: var(--primary); display: flex; align-items: center; gap: 12px; }
+        .theme-toggle { cursor: pointer; font-size: 1.4rem; color: var(--text-sub); padding: 10px; transition: 0.2s; }
 
         /* Step Boxes */
         .config-box { background: #fffbeb; border: 1px solid #fcd34d; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         [data-theme="dark"] .config-box { background: #1a1601; border-color: #78350f; color: #fbbf24; }
-        .config-box label { font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
         .input-group { display: flex; gap: 10px; margin-top: 10px; }
-        .path-input { flex: 1; padding: 12px 15px; border: 1px solid #fcd34d; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.9rem; background: var(--card); color: var(--text-main); outline: none; }
+        .path-input { flex: 1; padding: 12px; border: 1px solid #fcd34d; border-radius: 8px; background: var(--card); color: var(--text-main); font-family: monospace; outline: none; }
         .btn-save { background: #d97706; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-        .picker-zone { background: var(--card); padding: 50px 20px; border-radius: 16px; border: 3px dashed var(--border); text-align: center; margin-bottom: 20px; }
-        .btn-browse { background: var(--primary); color: white; border: none; padding: 14px 35px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; }
+        .picker-zone { background: var(--card); padding: 60px 20px; border-radius: 16px; border: 3px dashed var(--border); text-align: center; margin-bottom: 20px; cursor: pointer; }
+        .btn-browse { background: var(--primary); color: white; border: none; padding: 14px 35px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
         /* Stats & Controls */
         .stats-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border-left: 5px solid var(--primary); }
-        .stat-value { font-size: 1.4rem; font-weight: 800; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); display: flex; align-items: center; gap: 15px; }
+        .stat-value { font-size: 1.5rem; font-weight: 800; }
 
-        .controls { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: none; gap: 12px; align-items: center; }
-        .search-wrapper { position: relative; flex: 2; }
+        .controls { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: none; gap: 12px; flex-wrap: wrap; }
+        .search-wrapper { position: relative; flex: 2; min-width: 250px; }
         .search-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
         .search-input { width: 100%; padding: 11px 11px 11px 38px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text-main); outline: none; }
-        .filter-select { flex: 1; padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text-main); cursor: pointer; }
+        .filter-select { flex: 1; min-width: 150px; padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text-main); cursor: pointer; }
 
         /* Table */
-        .table-container { background: var(--card); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: none; }
+        .table-container { background: var(--card); border-radius: 16px; overflow: hidden; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th { background: var(--table-header); padding: 15px; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        th { background: var(--bg); padding: 15px; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; border-bottom: 2px solid var(--border); }
         td { padding: 14px 15px; border-bottom: 1px solid var(--border); }
         tr:hover { background-color: var(--row-hover); cursor: pointer; }
 
-        .file-info { display: flex; align-items: center; gap: 12px; }
-        .platform-icon { width: 32px; height: 32px; background: var(--bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-        .file-details { display: flex; flex-direction: column; overflow: hidden; }
         .file-name { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
-        .abs-path { font-size: 0.65rem; color: var(--text-sub); font-family: monospace; }
-
+        .abs-path { font-size: 0.65rem; color: var(--text-sub); font-family: monospace; display: block; margin-top: 2px; }
         .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
-        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 25px; border-radius: 50px; font-weight: 600; display: none; z-index: 9999; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 25px; border-radius: 50px; display: none; z-index: 10000; }
     </style>
 </head>
 <body>
 
-    <div id="toast">✅ Đã copy Path tuyệt đối!</div>
+    <div id="toast">✅ Đã copy đường dẫn!</div>
 
     <div class="container">
         <header class="header">
             <div class="header-title" onclick="resetApp()">
-                <h1><i class="fas fa-check-double"></i> Playable Ads Size Build Checker</h1>
-                <p>Check dung lượng (HTML/ZIP) & Tạo đường dẫn tuyệt đối</p>
+                <h1><i class="fas fa-check-double"></i> Playable Ads Validator Pro</h1>
+                <p>Check dung lượng (HTML/ZIP) & Tuyệt đối hóa đường dẫn</p>
             </div>
-            <div class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Đổi chế độ Sáng/Tối">
+            <div class="theme-toggle" id="themeBtn" onclick="toggleTheme()">
                 <i class="fas fa-moon"></i>
             </div>
         </header>
 
         <section class="config-box" id="configSection">
-            <label><i class="fas fa-keyboard"></i> BƯỚC 1: NHẬP ĐƯỜNG DẪN GỐC (WINDOWS PATH)</label>
+            <label><i class="fas fa-keyboard"></i> NHẬP ĐƯỜNG DẪN GỐC (WINDOWS PATH - TÙY CHỌN)</label>
             <div class="input-group">
-                <input type="text" id="basePath" class="path-input" placeholder="Dán đường dẫn folder từ File Explorer vào đây...">
-                <button class="btn-save" onclick="savePath()">LƯU CẤU HÌNH</button>
+                <input type="text" id="basePath" class="path-input" placeholder="Ví dụ: D:\Projects\GameName. Để trống nếu chỉ muốn xem Path tương đối.">
+                <button class="btn-save" onclick="savePath()">LƯU</button>
             </div>
         </section>
 
         <section class="picker-zone" id="dropZone">
-            <i class="fas fa-file-zipper" style="color:var(--text-sub); font-size:4rem; margin-bottom:15px; display:block"></i>
-            <h2>BƯỚC 2: CHỌN THƯ MỤC DỰ ÁN (VD Folder: super-html)</h2>
-            <p style="margin-bottom: 20px; color: var(--text-sub);">Hệ thống chỉ quét các file định dạng <b>.html</b> và <b>.zip</b></p>
+            <i class="fas fa-folder-open" style="color:var(--text-sub); font-size:4rem; margin-bottom:15px; display:block"></i>
+            <h2>CHỌN THƯ MỤC DỰ ÁN (VD: super-html)</h2>
+            <p style="color: var(--text-sub); margin-bottom: 20px;">Lọc tự động chỉ lấy các file <b>.html</b> và <b>.zip</b></p>
             <button class="btn-browse" onclick="startScan()">
                 <i class="fas fa-search-plus"></i> QUÉT THƯ MỤC NGAY
             </button>
@@ -123,32 +95,37 @@
 
         <section class="stats-grid" id="statsGrid">
             <div class="stat-card">
-                <div class="stat-icon" style="color:var(--primary); font-size: 1.3rem"><i class="fas fa-file-code"></i></div>
-                <div><div style="color:var(--text-sub); font-size: 0.75rem;">Tổng file HTML/ZIP</div><div class="stat-value" id="statCount">0</div></div>
+                <div class="stat-icon" style="color:var(--primary); font-size:1.3rem"><i class="fas fa-file-invoice"></i></div>
+                <div><div style="color:var(--text-sub); font-size: 0.75rem;">Tổng file</div><div class="stat-value" id="statCount">0</div></div>
             </div>
             <div class="stat-card" style="border-left-color: #ef4444;">
-                <div class="stat-icon" style="color: #ef4444; font-size: 1.3rem"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-icon" style="color: #ef4444; font-size:1.3rem"><i class="fas fa-exclamation-triangle"></i></div>
                 <div><div style="color:var(--text-sub); font-size: 0.75rem;">Vượt 5MB</div><div class="stat-value" id="statFail" style="color: #ef4444;">0</div></div>
             </div>
             <div class="stat-card" style="border-left-color: #10b981;">
-                <div class="stat-icon" style="color: #10b981; font-size: 1.3rem"><i class="fas fa-weight-hanging"></i></div>
-                <div><div style="color:var(--text-sub); font-size: 0.75rem;">Dung lượng tổng</div><div class="stat-value" id="statSize">0 MB</div></div>
+                <div class="stat-icon" style="color: #10b981; font-size:1.3rem"><i class="fas fa-weight-hanging"></i></div>
+                <div><div style="color:var(--text-sub); font-size: 0.75rem;">Tổng Size</div><div class="stat-value" id="statSize">0 MB</div></div>
             </div>
         </section>
 
         <section class="controls" id="controlsSection">
             <div class="search-wrapper">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên file hoặc nền tảng...">
+                <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên file, platform...">
             </div>
+            <select id="typeFilter" class="filter-select">
+                <option value="all">📍 Định dạng: Tất cả</option>
+                <option value="HTML">HTML</option>
+                <option value="ZIP">ZIP</option>
+            </select>
             <select id="statusFilter" class="filter-select">
-                <option value="all">Tất cả trạng thái</option>
-                <option value="pass">Chỉ file PASS</option>
-                <option value="fail">Chỉ file OVER</option>
+                <option value="all">🚦 Trạng thái: Tất cả</option>
+                <option value="pass">PASS (< 5MB)</option>
+                <option value="fail">OVER (≥ 5MB)</option>
             </select>
             <select id="sortOrder" class="filter-select">
-                <option value="desc">Nặng nhất lên đầu</option>
-                <option value="asc">Nhẹ nhất lên đầu</option>
+                <option value="desc">📉 Nặng nhất trước</option>
+                <option value="asc">📈 Nhẹ nhất trước</option>
             </select>
         </section>
 
@@ -156,9 +133,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th width="65%">Tên File & Đường dẫn (Click để Copy)</th>
+                        <th width="55%">Tên File & Đường dẫn (Click để Copy)</th>
                         <th width="15%">Định dạng</th>
-                        <th width="20%" style="text-align: right;">Dung lượng & Trạng thái</th>
+                        <th width="30%" style="text-align: right;">Dung lượng</th>
                     </tr>
                 </thead>
                 <tbody id="fileList"></tbody>
@@ -170,19 +147,13 @@
         const LIMIT_MB = 5.0;
         let allFiles = [];
 
-        // Khởi tạo: Load Theme & Path
         window.onload = () => {
-            // Load Theme
-            const savedTheme = localStorage.getItem('v_playable_theme') || 
-                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            const savedTheme = localStorage.getItem('v_playable_theme') || 'light';
             applyTheme(savedTheme);
-
-            // Load Path
             const savedPath = localStorage.getItem('v_playable_base_path');
             if (savedPath) document.getElementById('basePath').value = savedPath;
         };
 
-        // Hàm Đổi Theme
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -192,28 +163,19 @@
 
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            const icon = document.getElementById('themeBtn').querySelector('i');
-            if (theme === 'dark') {
-                icon.className = 'fas fa-sun';
-            } else {
-                icon.className = 'fas fa-moon';
-            }
+            document.getElementById('themeBtn').innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
         function resetApp() {
-            allFiles = [];
             document.getElementById('dropZone').style.display = 'block';
             document.getElementById('configSection').style.display = 'block';
             document.getElementById('statsGrid').style.display = 'none';
             document.getElementById('controlsSection').style.display = 'none';
             document.getElementById('tableSection').style.display = 'none';
-            document.getElementById('fileList').innerHTML = '';
-            showToast("🏠 Đã về màn hình chính");
         }
 
         function savePath() {
             const path = document.getElementById('basePath').value.trim();
-            if(!path) return alert("Vui lòng nhập đường dẫn!");
             localStorage.setItem('v_playable_base_path', path);
             showToast("💾 Đã lưu cấu hình!");
         }
@@ -225,21 +187,17 @@
             setTimeout(() => t.style.display = 'none', 2000);
         }
 
-        function getPlatformInfo(name) {
+        function getPlatformIcon(name) {
             const n = name.toLowerCase();
             if (n.includes('google')) return { icon: 'fab fa-google', color: '#4285F4' };
             if (n.includes('facebook') || n.includes('fb')) return { icon: 'fab fa-facebook', color: '#1877F2' };
             if (n.includes('tiktok') || n.includes('pangle')) return { icon: 'fab fa-tiktok', color: '#000000' };
             if (n.includes('unity')) return { icon: 'fab fa-unity', color: '#222c37' };
-            if (n.includes('applovin') || n.includes('ironsource')) return { icon: 'fas fa-bolt', color: '#f59e0b' };
-            if (n.includes('snapchat')) return { icon: 'fab fa-snapchat-ghost', color: '#FFFC00' };
             return { icon: 'fas fa-file-code', color: 'var(--text-sub)' };
         }
 
         async function startScan() {
             const basePath = document.getElementById('basePath').value.trim().replace(/[\\/]$/, "");
-            if (!basePath) return alert("Vui lòng thực hiện BƯỚC 1 trước!");
-
             try {
                 const dirHandle = await window.showDirectoryPicker();
                 allFiles = [];
@@ -254,80 +212,69 @@
                             if (ext === 'html' || ext === 'zip') {
                                 const file = await entry.getFile();
                                 const mb = parseFloat((file.size / (1024 * 1024)).toFixed(2));
-                                const isOver = mb >= LIMIT_MB;
-                                if(isOver) failCount++;
-                                
+                                if(mb >= LIMIT_MB) failCount++;
                                 allFiles.push({
                                     name: file.name,
-                                    absPath: `${basePath}\\${subPath}`,
+                                    displayPath: basePath ? `${basePath}\\${subPath}` : subPath,
                                     sizeMB: mb,
-                                    isOver: isOver,
+                                    isOver: mb >= LIMIT_MB,
                                     type: ext.toUpperCase(),
-                                    platform: getPlatformInfo(file.name)
+                                    platform: getPlatformIcon(file.name)
                                 });
                                 totalBytes += file.size;
                             }
-                        } else if (entry.kind === 'directory') {
-                            await scan(entry, subPath);
-                        }
+                        } else if (entry.kind === 'directory') await scan(entry, subPath);
                     }
                 }
 
                 await scan(dirHandle, "");
-                
                 document.getElementById('dropZone').style.display = 'none';
                 document.getElementById('configSection').style.display = 'none';
                 document.getElementById('statsGrid').style.display = 'grid';
                 document.getElementById('controlsSection').style.display = 'flex';
                 document.getElementById('tableSection').style.display = 'block';
-
                 document.getElementById('statCount').innerText = allFiles.length;
                 document.getElementById('statFail').innerText = failCount;
                 document.getElementById('statSize').innerText = (totalBytes / (1024 * 1024)).toFixed(2) + " MB";
-                
                 renderTable();
             } catch (e) { if(e.name !== 'AbortError') console.error(e); }
         }
 
         function renderTable() {
             const search = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('typeFilter').value;
             const status = document.getElementById('statusFilter').value;
             const sort = document.getElementById('sortOrder').value;
 
             let filtered = allFiles.filter(f => {
-                const matchSearch = f.name.toLowerCase().includes(search) || f.absPath.toLowerCase().includes(search);
+                const matchSearch = f.name.toLowerCase().includes(search) || f.displayPath.toLowerCase().includes(search);
+                const matchType = type === 'all' || f.type === type;
                 const matchStatus = status === 'all' || (status === 'pass' && !f.isOver) || (status === 'fail' && f.isOver);
-                return matchSearch && matchStatus;
+                return matchSearch && matchType && matchStatus;
             });
 
+            // Sắp xếp theo dung lượng
             filtered.sort((a, b) => sort === 'desc' ? b.sizeMB - a.sizeMB : a.sizeMB - b.sizeMB);
 
             const tbody = document.getElementById('fileList');
             tbody.innerHTML = filtered.map(f => `
-                <tr onclick="copyToClipboard('${f.absPath.replace(/\\/g, '\\\\')}')">
+                <tr onclick="copyToClipboard('${f.displayPath.replace(/\\/g, '\\\\')}')">
                     <td>
-                        <div class="file-info">
-                            <div class="platform-icon" style="color: ${f.platform.color}">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; background: var(--bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: ${f.platform.color}">
                                 <i class="${f.platform.icon}"></i>
                             </div>
-                            <div class="file-details">
+                            <div style="overflow: hidden;">
                                 <span class="file-name">${f.name}</span>
-                                <span class="abs-path">${f.absPath}</span>
+                                <span class="abs-path">${f.displayPath}</span>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <span style="font-weight:700; font-size:0.75rem; color:var(--text-sub)">
-                            ${f.type === 'ZIP' ? '📦 ZIP' : '📄 HTML'}
-                        </span>
-                    </td>
+                    <td style="font-weight:700; font-size:0.75rem; color:var(--text-sub)">${f.type}</td>
                     <td style="text-align: right;">
-                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-                            <span style="font-weight:800; font-size: 1.1rem; ${f.isOver ? 'color:#ef4444' : ''}">${f.sizeMB} MB</span>
-                            <span class="badge ${f.isOver ? 'badge-danger' : 'badge-success'}">
-                                <i class="fas ${f.isOver ? 'fa-times' : 'fa-check'}"></i>
-                                ${f.isOver ? 'OVER' : 'PASS'}
-                            </span>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                            <span style="font-weight:800; ${f.isOver ? 'color:#ef4444' : ''}">${f.sizeMB} MB</span>
+                            <span class="badge ${f.isOver ? 'badge-danger' : 'badge-success'}">${f.isOver ? 'OVER' : 'PASS'}</span>
                         </div>
                     </td>
                 </tr>
@@ -336,10 +283,12 @@
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text);
-            showToast("✅ Đã copy Path tuyệt đối!");
+            showToast("✅ Đã copy đường dẫn!");
         }
 
+        // Đăng ký sự kiện cho tất cả bộ lọc
         document.getElementById('searchInput').oninput = renderTable;
+        document.getElementById('typeFilter').onchange = renderTable;
         document.getElementById('statusFilter').onchange = renderTable;
         document.getElementById('sortOrder').onchange = renderTable;
     </script>
